@@ -8,7 +8,7 @@ export class ButtonLoadMore extends Component {
       <button
         type="button"
         className={css.ButtonLoadMore}
-        onClick={handleLoadmore}
+        onClick={handleLoadMore}
       >
         Load More
       </button>
