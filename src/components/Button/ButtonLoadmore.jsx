@@ -3,7 +3,7 @@ import css from './ButtonLoadMore.module.css';
 
 export class ButtonLoadMore extends Component {
   render() {
-    const { label, handleLoadMore } = this.props;
+    const { handleLoadMore } = this.props;
     return (
       <button
         type="button"

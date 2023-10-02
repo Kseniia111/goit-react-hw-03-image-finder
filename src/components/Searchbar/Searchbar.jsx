@@ -3,10 +3,10 @@ import css from './Searchbar.module.css';
 
 export class Searchbar extends Component {
   render() {
-    const { onSubmit, onChange, onClickClear, query } = this.props;
+    const { onSubmit, onChange, query } = this.props;
     return (
       <header className={css.searchBar}>
-        <form className={css.cearchForm} onSubmit={onSubmit}>
+        <form className={css.searchForm} onSubmit={onSubmit}>
           <button type="submit" className={css.searchFormButton}>
             <span className={css.searchFormButtonLabel}>Search</span>
           </button>
@@ -14,9 +14,9 @@ export class Searchbar extends Component {
           <input
             className={css.searchFormInput}
             type="text"
-            autocomplete="off"
-            autofocus
-            placeholder="Search images and photos"
+            autoComplete="off"
+            autoFocus
+            placeholder="Search images"
             onChange={onChange}
             value={query}
           />
