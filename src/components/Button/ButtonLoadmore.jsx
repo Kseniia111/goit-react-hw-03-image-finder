@@ -3,14 +3,14 @@ import css from './ButtonLoadMore.module.css';
 
 export class ButtonLoadMore extends Component {
   render() {
-    const { handleLoadMore } = this.props;
+    const { label, handleLoadMore } = this.props;
     return (
       <button
         type="button"
         className={css.ButtonLoadMore}
         onClick={handleLoadMore}
       >
-        Load More
+        {label}
       </button>
     );
   }

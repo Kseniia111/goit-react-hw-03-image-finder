@@ -5,6 +5,7 @@ import { ButtonLoadMore } from './Button/ButtonLoadmore';
 import { Loader } from './Loader/Loader';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Modal } from './Modal/Modal';
+
 export class App extends Component {
   state = {
     query: '',
@@ -80,7 +81,14 @@ export class App extends Component {
     } = this.state;
 
     return (
-      <>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr',
+          gridGap: 16,
+          paddingBottom: 24,
+        }}
+      >
         <Searchbar
           onSubmit={this.handleSubmit}
           onChange={this.handleChange}
@@ -110,7 +118,7 @@ export class App extends Component {
         {ShowModal && (
           <Modal onClose={this.onClose} largeImageURL={largeImageURL} />
         )}
-      </>
+      </div>
     );
   }
 }
