@@ -16,6 +16,6 @@
   max-height: calc(100vh - 24px);
 }
 
-.modal__image {
+.modalImage {
   max-height: calc(100vh - 60px);
 }

@@ -23,10 +23,6 @@ export class App extends Component {
     this.setState({ query: event.target.value });
   };
 
-  onClickClear = () => {
-    this.setState({ query: '' });
-  };
-
   fetchImagesByQuery = async searchQuery => {
     this.setState({ isLoading: true, error: null, noResults: false });
     try {
@@ -44,6 +40,7 @@ export class App extends Component {
       this.setState({ isLoading: false });
     }
   };
+
   handleSubmit = event => {
     event.preventDefault();
     if (this.state.query === '') {
@@ -68,6 +65,7 @@ export class App extends Component {
   onClose = () => {
     this.setState({ showModal: false, largeImageURL: '' });
   };
+
   render() {
     const {
       page,
@@ -75,7 +73,7 @@ export class App extends Component {
       isLoading,
       lastPage,
       error,
-      ShowModal,
+      showModal,
       largeImageURL,
       noResults,
     } = this.state;
@@ -92,7 +90,6 @@ export class App extends Component {
         <Searchbar
           onSubmit={this.handleSubmit}
           onChange={this.handleChange}
-          noClickClear={this.onClickClear}
           query={this.state.query}
         />
         {isLoading && <Loader />}
@@ -115,7 +112,7 @@ export class App extends Component {
         ) : (
           <div style={{ height: 40 }}></div>
         )}
-        {ShowModal && (
+        {showModal && (
           <Modal onClose={this.onClose} largeImageURL={largeImageURL} />
         )}
       </div>

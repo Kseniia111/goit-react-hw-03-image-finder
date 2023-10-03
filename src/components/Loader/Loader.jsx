@@ -1,14 +1,14 @@
 import { Component } from 'react';
-import { Dna } from 'react-loader-spinner';
+import { ColorRing } from 'react-loader-spinner';
 
 export class Loader extends Component {
   render() {
     return (
-      <Dna
+      <ColorRing
         visible={true}
         height="80"
-        width="180"
-        ariaLabel="dna-loading"
+        width="80"
+        ariaLabel="blocks-loading"
         wrapperStyle={{
           display: 'flex',
           justifyContent: 'center',
@@ -22,7 +22,8 @@ export class Loader extends Component {
           bottom: '0',
           zIndex: '9999',
         }}
-        wrapperClass="dna-wrapper"
+        wrapperClass="blocks-wrapper"
+        colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
       />
     );
   }
