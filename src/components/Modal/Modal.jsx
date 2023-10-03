@@ -2,32 +2,25 @@ import { Component } from 'react';
 import css from './Modal.module.css';
 
 export class Modal extends Component {
-  constructor(props) {
-    super(props);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleBackdropClick = this.handleBackdropClick.bind(this);
-  }
-
   componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keydown', this.handleKeydown);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keydown', this.handleKeydown);
   }
 
-  handleKeyDown = e => {
+  handleKeydown = e => {
     if (e.code === 'Escape') {
-      this.props.onClose();
+      this.props.onCloseModal();
     }
   };
 
-  handleBackdropClick = e => {
-    if (e.currentTarget === e.target) {
-      this.props.onClose();
+  handleBackdropClick = ({ target, currentTarget }) => {
+    if (currentTarget === target) {
+      this.props.onCloseModal();
     }
   };
-
   render() {
     const { largeImageURL } = this.props;
     return (

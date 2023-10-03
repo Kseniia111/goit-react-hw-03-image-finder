@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import css from './ImageGallery.module.css';
+
 export class ImageGallery extends Component {
   render() {
     const { images, onImageClick } = this.props;
