@@ -9,7 +9,6 @@ export class Modal extends Component {
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeydown);
   }
-
   handleKeydown = e => {
     if (e.code === 'Escape') {
       this.props.onClose();
