@@ -1,82 +1,86 @@
 import { Component } from 'react';
-import { Searchbar } from './Searchbar/Searchbar';
-import { fetchImages } from './services/api';
-import { ButtonLoadMore } from './Button/ButtonLoadmore';
-import { Loader } from './Loader/Loader';
-import { ImageGallery } from './ImageGallery/ImageGallery';
-import { Modal } from './Modal/Modal';
+
+import Searchbar from './Searchbar/Searchbar';
+import imagesApi from './services/ImagesApi';
+import ButtonLoadMore from './Button/ButtonLoadmore';
+import Loader from './Loader/Loader';
+import ImageGallery from './ImageGallery/ImageGallery';
+import Modal from './Modal/Modal';
 
 export class App extends Component {
   state = {
-    query: '',
-    page: 1,
-    images: [],
+    hits: [],
+    currentPage: 1,
+    searchQuery: '',
     isLoading: false,
-    lastPage: 1,
-    error: null,
     showModal: false,
     largeImageURL: '',
-    noResults: false,
+    tags: '',
   };
 
-  handleChange = event => {
-    this.setState({ query: event.target.value });
-  };
-
-  fetchImagesByQuery = async searchQuery => {
-    this.setState({ isLoading: true, error: null, noResults: false });
-    try {
-      const response = await fetchImages(searchQuery, this.state.page);
-      this.setState(prevState => ({
-        images: [...prevState.images, ...response.hits],
-        lastPage: Math.ceil(response.totalHits / 12),
-      }));
-      if (response.totalHits === 0) {
-        this.setState({ noResults: true });
-      }
-    } catch (error) {
-      this.setState({ error });
-    } finally {
-      this.setState({ isLoading: false });
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.searchQuery !== this.state.searchQuery) {
+      this.fetchImages();
     }
-  };
+  }
 
-  handleSubmit = event => {
-    event.preventDefault();
-    if (this.state.query === '') {
-      alert('Please enter your query');
-      return;
-    }
-    this.setState({ images: [], page: 1 }, () => {
-      this.fetchImagesByQuery(this.state.query);
+  onChangeQuery = query => {
+    this.setState({
+      searchQuery: query,
+      currentPage: 1,
+      hits: [],
+      error: null,
     });
   };
 
-  handleLoadMore = () => {
-    this.setState({ page: this.state.page + 1 }, () => {
-      this.fetchImagesByQuery(this.state.query);
+  fetchImages = () => {
+    const { currentPage, searchQuery } = this.state;
+    const options = { searchQuery, currentPage };
+
+    this.setState({ isLoading: true });
+
+    imagesApi
+      .fetchImages(options)
+      .then(hits => {
+        if (hits.length === 0) {
+          alert('That is it. Try something else!');
+        }
+        this.setState(prevState => ({
+          hits: [...prevState.hits, ...hits],
+          currentPage: prevState.currentPage + 1,
+        }));
+      })
+      .then(() => {
+        if (this.state.currentPage > 2) {
+          window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: 'smooth',
+          });
+        }
+      })
+      .catch(() => {
+        alert('Woops, something went wrong!');
+      })
+      .finally(() => this.setState({ isLoading: false }));
+  };
+
+  onModal = ({ largeImageURL, tags }) => {
+    this.setState({
+      largeImageURL: largeImageURL,
+      tags: tags,
     });
+    this.toggleModal();
   };
 
-  onImageClick = largeImageURL => {
-    this.setState({ showModal: true, largeImageURL: largeImageURL });
-  };
-
-  onClose = () => {
-    this.setState({ showModal: false, largeImageURL: '' });
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
   };
 
   render() {
-    const {
-      page,
-      images,
-      isLoading,
-      lastPage,
-      error,
-      showModal,
-      largeImageURL,
-      noResults,
-    } = this.state;
+    const { hits, isLoading, showModal, largeImageURL, tags } = this.state;
+    const shouldRenderLoadMoreButton = hits.length > 0 && !isLoading;
 
     return (
       <div
@@ -87,33 +91,19 @@ export class App extends Component {
           paddingBottom: 24,
         }}
       >
-        <Searchbar
-          onSubmit={this.handleSubmit}
-          onChange={this.handleChange}
-          query={this.state.query}
-        />
+        <Searchbar onSubmit={this.onChangeQuery} />
+        <ImageGallery hits={hits} onClick={this.onModal} />
+
+        {shouldRenderLoadMoreButton && (
+          <ButtonLoadMore onClick={this.fetchImages} />
+        )}
+
         {isLoading && <Loader />}
-        {noResults && (
-          <p className="alertStyle">
-            No images found. Please try another query.
-          </p>
-        )}
-        <ImageGallery images={images} onImageClick={this.onImageClick} />
-        {error && (
-          <p className="alertStyle">
-            Whoops, something went wrong: {error.message}
-          </p>
-        )}
-        {page < lastPage && !isLoading && !error ? (
-          <ButtonLoadMore
-            label={'Load more'}
-            handleLoadMore={this.handleLoadMore}
-          />
-        ) : (
-          <div style={{ height: 40 }}></div>
-        )}
+
         {showModal && (
-          <Modal onClose={this.onClose} largeImageURL={largeImageURL} />
+          <Modal onClose={this.toggleModal}>
+            <img src={largeImageURL} alt={tags} />
+          </Modal>
         )}
       </div>
     );
